@@ -14,12 +14,13 @@ export class ArticlesController {
     }
 
     @Get(':id')
-    findOneArticle(@Param('id') id: string) {
+    findOneArticle(@Param('id') id: number) /* Param domyślnie jest stringiem, transform:true w Pipe umożliwia otypowanie go na number */ {
         return this.articlesService.findOne("" + id)
     }
 
     @Post()
     createArticle(@Body() createArticleDto: CreateArticleDto) {
+        console.log(createArticleDto instanceof CreateArticleDto)
         return this.articlesService.create(createArticleDto)
     }
 

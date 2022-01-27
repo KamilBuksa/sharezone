@@ -3,5 +3,5 @@ export class Article {
     title:string;
     lead:string;
     body:string;
-    createdAt: Date;
+    // createdAt: Date;
 }

@@ -8,7 +8,7 @@ export class ArticlesService {
         lead: 'First Lead',
         body: 'First body',
         id: 1,
-        createdAt: new Date()
+        // createdAt: new Date()
     }]
 
     findAll() {
@@ -27,6 +27,7 @@ export class ArticlesService {
 
     create(createArticleDto: any) {
         this.articles.push(createArticleDto);
+        return createArticleDto
     }
 
     update(id: string, updateCoffeeDto: any) {
