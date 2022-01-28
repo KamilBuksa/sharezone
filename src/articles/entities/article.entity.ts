@@ -1,17 +1,16 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column,Entity,PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
 export class Article {
     @PrimaryGeneratedColumn()
-    id:number;
+    id: number;
 
     @Column()
-    title:string;
+    title: string;
 
     @Column()
-    lead:string;
+    lead: string;
 
     @Column()
-    body:string;
-    // createdAt: Date;
+    body: string;
 }

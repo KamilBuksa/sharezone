@@ -1,4 +1,4 @@
-import {IsDate, IsString} from "class-validator";
+import {IsString} from "class-validator";
 
 export class CreateArticleDto {
 
@@ -11,6 +11,4 @@ export class CreateArticleDto {
     @IsString()
     readonly body: string;
 
-    // @IsDate()
-    // readonly createdAt: Date;
 }

@@ -1,4 +1,13 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Param,
+    Post,
+    Body,
+    Patch,
+    Delete,
+    Query
+} from '@nestjs/common';
 import {ArticlesService} from "./articles.service";
 import {CreateArticleDto} from "./dto/create-article.dto";
 import {UpdateArticleDto} from "./dto/update-article.dto";
@@ -9,7 +18,8 @@ export class ArticlesController {
     }
 
     @Get()
-    findAllArticles() {
+    findAllArticles(@Query() paginationQuery) {
+        const {limit, offset} = paginationQuery;
         return this.articlesService.findAll()
     }
 
@@ -23,6 +33,12 @@ export class ArticlesController {
         console.log(createArticleDto instanceof CreateArticleDto)
         return this.articlesService.create(createArticleDto)
     }
+
+    // @Patch(':id')
+    // updateArticle(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
+    //     console.log('patch in')
+    //     return this.articlesService.update(id, updateArticleDto)
+    // }
 
     @Patch(':id')
     updateArticle(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {

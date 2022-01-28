@@ -1,47 +1,54 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {Article} from "./entities/article.entity";
-
+import {InjectRepository} from "@nestjs/typeorm";
+import {Repository} from "typeorm";
+import {CreateArticleDto} from "./dto/create-article.dto";
+import {UpdateArticleDto} from "./dto/update-article.dto";
 @Injectable()
 export class ArticlesService {
-    private articles: Article[] = [{
-        title: 'First Article',
-        lead: 'First Lead',
-        body: 'First body',
-        id: 1,
-        // createdAt: new Date()
-    }]
-
-    findAll() {
-        return this.articles;
+    constructor(
+        @InjectRepository(Article)
+        private articleRepository: Repository<Article>
+    ) {
     }
 
-    findOne(id: string) {
-        const article = this.articles.find(item => item.id === +id);
+    findAll() {
+        return this.articleRepository.find();
+    }
+
+    async findOne(id: string) {
+        const article = await this.articleRepository.findOne(id);
 
         if (!article) {
-            throw new NotFoundException(`Coffee #${id} not found`)
+            throw new NotFoundException(`Article #${id} not found`)
         }
 
         return article
     }
 
-    create(createArticleDto: any) {
-        this.articles.push(createArticleDto);
-        return createArticleDto
+    create(createArticleDto: CreateArticleDto) {
+        const article = this.articleRepository.create(createArticleDto);
+        return this.articleRepository.save(article)
     }
 
-    update(id: string, updateCoffeeDto: any) {
-        const existingArticle = this.findOne(id);
-        if (existingArticle) {
-            // update the existing entity
+    async update(id: string, updateArticleDto: UpdateArticleDto) {
+        console.log('update')
+        const article = await this.articleRepository.preload({
+            id: +id,
+            ...updateArticleDto,
+        });
+        console.log(article)
+        if (!article) {
+            throw new NotFoundException(`Article #${id} not found`)
         }
+
+        return this.articleRepository.save(article)
     }
 
-    remove(id: string) {
-        const articleIndex = this.articles.findIndex(item => item.id === +id);
-        if (articleIndex >= 0) {
-            this.articles.splice(articleIndex, 1);
-        }
+    async remove(id: string) {
+        const article = await this.articleRepository.findOne(id);
+        console.log(article)
+        return this.articleRepository.remove(article);
     }
 }
 
