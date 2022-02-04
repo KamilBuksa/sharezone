@@ -1,14 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ArticlesModule } from './articles/articles.module';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { ConfigModule } from "@nestjs/config";
 
 
 @Module({
-  imports: [ArticlesModule,
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env'
+    }),
+    ArticlesModule,
     TypeOrmModule.forRoot({
     type: 'postgres',
     host: 'localhost',
@@ -22,6 +26,6 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     UsersModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}
