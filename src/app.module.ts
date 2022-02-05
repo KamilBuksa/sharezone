@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ArticlesModule } from './articles/articles.module';
 import {TypeOrmModule} from "@nestjs/typeorm";
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 
 @Module({
@@ -16,8 +18,13 @@ import {TypeOrmModule} from "@nestjs/typeorm";
     database: 'postgres',
     autoLoadEntities: true,
     synchronize: true, // your entities will be synced with the database(recommended: disable in prod)
-  })],
-  controllers: [AppController],
-  providers: [AppService],
+  }),
+    AuthModule,
+    UsersModule],
+  controllers: [AppController,],
+  providers: [AppService, ],
 })
 export class AppModule {}
+
+// AuthController, UsersController
+// AuthService, UsersService
