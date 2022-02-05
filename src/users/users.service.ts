@@ -1,45 +1,88 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import { CreateUserDto, OmitUserId } from "./dto/create-user.dto";
-// This should be a real class/interface representing a user entity
-// export type User = {
-//   userId: number;
-//   username: string;
-//   password: string;
-//
-//
-// }
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "./entities/user.entity";
+import { Repository } from "typeorm";
+import { use } from "passport";
+
 
 @Injectable()
 export class UsersService {
   private readonly users: CreateUserDto[];
 
-  constructor() {
+  constructor(@InjectRepository(User)
+              private readonly userRepository: Repository<User>
+  ) {
     this.users = [];
   }
 
 
-  async findOne(username: string): Promise<CreateUserDto | undefined> {
-    console.log('FIND ONE', await this.users.find(user => user.username === username));
-    return this.users.find(user => user.username === username);
+  async findOne(id: string): Promise<any | undefined> {
+
+    const user = await this.userRepository.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`Coffe #${id} not found`);
+    }
+    return user;
   }
 
-  async create(userData: OmitUserId): Promise<boolean> {
+  // async findOne(username: string): Promise<CreateUserDto | undefined> {
+  //   return this.users.find(user => user.username === username);
+  // }
+
+  async create(createUserDto: CreateUserDto): Promise<any> {
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(userData.password, salt);
+    const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
     const userId = Date.now();
-    this.users.push({
+
+    const userObj = {
       userId: userId,
-      username: userData.username,
+      username: createUserDto.username,
       password: hashedPassword
+    };
+const username = userObj.username;
+const password = userObj.password;
+
+    const user = await this.userRepository.create({
+      userId:userId,
+      username:username,
+      password:password,
     })
 
-    console.log('userData', userData);
-
-
-    return true
+    return this.userRepository.save(user);
 
   }
 }
 
 
+// async create(userData: any): Promise<any> {
+//   const salt = await bcrypt.genSalt(10);
+//   const hashedPassword = await bcrypt.hash(userData.password, salt);
+//   const userId = Date.now();
+//
+//   this.users.push({
+//     userId: userId,
+//     username: userData.username,
+//     password: hashedPassword
+//   })
+//
+//   return true
+
+
+
+// async createItem(createItemDto: CreateItemDto, user: User): Promise<Item> {
+//   const newItem = await this.itemsRepository.save({
+//     name: createItemDto.name,
+//     description: createItemDto.description,
+//     price: createItemDto.price,
+//     delivery: createItemDto.delivery,
+//     rating: createItemDto.rating,
+//     imageUrl: createItemDto.imageUrl,
+//   });
+//
+//   user.items = [...user.items, newItem];
+//   await user.save();
+//
+//   return newItem;
+// }

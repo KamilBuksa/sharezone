@@ -1,12 +1,12 @@
 import { IsNumber, IsString } from "class-validator";
-
 export type OmitPassword= Omit<CreateUserDto, "password">
 export type OmitUserId= Omit<CreateUserDto, "userId">
 
 export class CreateUserDto {
 
   @IsNumber()
-  userId: number;
+  userId:  number;
+
 
   @IsString()
   username: string;
