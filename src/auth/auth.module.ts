@@ -15,7 +15,7 @@ import { JwtStrategy } from "./jwt.strategy";
       // secret: process.env.JWT_SECRET,
       secret: jwtConstants.secret,
 
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '100s' },
     }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
